@@ -14,7 +14,9 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(morgan('dev'));
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
+
+// Serve static files from React build
+app.use(express.static(path.join(__dirname, 'client/dist')));
 
 // API Routes
 app.use('/api/links', linksRouter);
@@ -28,9 +30,9 @@ app.get('/healthz', (req, res) => {
 app.get('/:code', async (req, res, next) => {
     const { code } = req.params;
 
-    // Skip if it's a static file request that fell through (though express.static should handle it)
-    // or if it's 'index.html' etc.
-    if (code === 'index.html' || code === 'stats.html') {
+    // Skip if it's a frontend route (React Router handles these)
+    // This allows /code/:code to work for the Stats page
+    if (code === 'code' || code === 'api' || code === 'healthz') {
         return next();
     }
 
@@ -44,14 +46,8 @@ app.get('/:code', async (req, res, next) => {
         if (result.rows.length > 0) {
             return res.redirect(result.rows[0].url);
         } else {
-            // If not found, we can serve 404 page or JSON. Spec says "return 404 (HTML or JSON OK)"
-            // Since we have a frontend, maybe serving a 404 page is better, but for now let's send 404 status.
-            // We can also check if the user is trying to access a frontend route like /code/:code
-            // But /code/:code is handled by the frontend router usually, or we serve index.html?
-            // The spec says: GET /code/:code -> Stats page.
-            // Since we are using a simple SPA/static setup, we might need to handle /code/:code specifically to serve the stats page.
-            // Let's check if the code matches the stats page pattern.
-            return res.status(404).send('Not Found');
+            // Not found - let React Router handle it (might be a frontend route)
+            return next();
         }
     } catch (err) {
         console.error(err);
@@ -59,9 +55,9 @@ app.get('/:code', async (req, res, next) => {
     }
 });
 
-// Serve Stats Page for /code/:code
-app.get('/code/:code', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'stats.html'));
+// Fallback route for React Router (must be last)
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, 'client/dist', 'index.html'));
 });
 
 // Start server

@@ -14,7 +14,7 @@ A simple, premium URL shortener built with Node.js, Express, and PostgreSQL.
 
 - **Backend**: Node.js, Express
 - **Database**: PostgreSQL
-- **Frontend**: HTML, Tailwind CSS, Vanilla JS
+- **Frontend**: React, Vite, Tailwind CSS v4
 - **Deployment**: Render / Railway
 
 ## Getting Started
@@ -35,6 +35,7 @@ A simple, premium URL shortener built with Node.js, Express, and PostgreSQL.
 2.  Install dependencies:
     ```bash
     npm install
+    cd client && npm install && cd ..
     ```
 
 3.  Set up environment variables:
@@ -54,12 +55,13 @@ A simple, premium URL shortener built with Node.js, Express, and PostgreSQL.
     npm run migrate
     ```
 
-5.  Start the server:
+5.  Start the development servers:
     ```bash
     npm run dev
     ```
+    This will start both the backend (port 3000) and frontend (port 5173).
 
-6.  Open `http://localhost:3000` in your browser.
+6.  Open `http://localhost:5173` in your browser to see the React app.
 
 ## API Documentation
 
