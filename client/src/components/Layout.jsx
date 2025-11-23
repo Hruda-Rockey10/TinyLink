@@ -66,7 +66,8 @@ export default function Layout({ children }) {
 
             <footer className="py-8 mt-auto bg-white/20 dark:bg-slate-900/40 backdrop-blur-lg border-t border-white/30 dark:border-white/10">
                 <div className="container mx-auto px-6 text-center text-slate-800 dark:text-slate-300 text-sm font-medium">
-                    &copy; 2025 TinyLink. Built with Node.js, Express, React + Vite & PostgreSQL.
+                    <p>&copy; 2025 TinyLink. Built with Node.js, Express, React + Vite & PostgreSQL.</p>
+                    <p className="footer-ack">Built with the help of Antigravity AI.</p>
                 </div>
             </footer>
         </div>

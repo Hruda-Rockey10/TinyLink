@@ -5,6 +5,34 @@ export default function LinkForm({ onLinkCreated }) {
     const [code, setCode] = useState('');
     const [submitting, setSubmitting] = useState(false);
     const [message, setMessage] = useState({ text: '', type: '' });
+    const [showCelebration, setShowCelebration] = useState(false);
+
+    const createConfetti = () => {
+        const colors = ['#f87171', '#fbbf24', '#34d399', '#60a5fa', '#a78bfa', '#f472b6'];
+        const confettiElements = [];
+
+        for (let i = 0; i < 50; i++) {
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            const left = Math.random() * 100;
+            const animationDelay = Math.random() * 0.5;
+            const animationDuration = 2 + Math.random() * 1;
+
+            confettiElements.push(
+                <div
+                    key={i}
+                    className="confetti"
+                    style={{
+                        left: `${left}%`,
+                        top: '20%',
+                        backgroundColor: color,
+                        animationDelay: `${animationDelay}s`,
+                        animationDuration: `${animationDuration}s`,
+                    }}
+                />
+            );
+        }
+        return confettiElements;
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -22,9 +50,15 @@ export default function LinkForm({ onLinkCreated }) {
 
             if (res.ok) {
                 setMessage({ text: 'Link created successfully!', type: 'success' });
+                setShowCelebration(true);
                 setUrl('');
                 setCode('');
                 onLinkCreated();
+
+                // Auto-dismiss celebration after 3 seconds
+                setTimeout(() => {
+                    setShowCelebration(false);
+                }, 3000);
             } else {
                 throw new Error(data.error || 'Something went wrong');
             }
@@ -37,6 +71,13 @@ export default function LinkForm({ onLinkCreated }) {
 
     return (
         <div className="max-w-3xl mx-auto text-center mb-12">
+            {/* Confetti Container */}
+            {showCelebration && (
+                <div className="confetti-container">
+                    {createConfetti()}
+                </div>
+            )}
+
             <h2 className="text-4xl sm:text-5xl font-extrabold mb-4 text-slate-900 dark:text-white">
                 <span className="gradient-text">Shorten Your Links</span> with Style
             </h2>
@@ -44,7 +85,7 @@ export default function LinkForm({ onLinkCreated }) {
                 Create short, memorable links in seconds. Track clicks and manage your URLs easily.
             </p>
 
-            <div className="bg-white/95 dark:bg-slate-900/80 backdrop-blur-md rounded-2xl shadow-2xl p-6 sm:p-8 border-2 border-purple-300/40 dark:border-purple-500/30">
+            <div className={`bg-white/95 dark:bg-slate-900/80 backdrop-blur-md rounded-2xl shadow-2xl p-6 sm:p-8 border-2 border-purple-300/40 dark:border-purple-500/30 ${showCelebration ? 'shimmer-effect' : ''}`}>
                 <form onSubmit={handleSubmit} className="space-y-4">
                     <div className="flex flex-col sm:flex-row gap-4">
                         <div className="flex-grow relative">
@@ -78,10 +119,37 @@ export default function LinkForm({ onLinkCreated }) {
                     </div>
                     {message.text && (
                         <div
-                            className={`text-sm font-medium ${message.type === 'success' ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'
+                            className={`flex items-center justify-center gap-2 text-sm font-medium ${message.type === 'success'
+                                    ? 'text-green-600 dark:text-green-400 success-pop'
+                                    : 'text-red-600 dark:text-red-400'
                                 }`}
                         >
-                            {message.text}
+                            {message.type === 'success' && (
+                                <svg
+                                    className="w-5 h-5"
+                                    viewBox="0 0 20 20"
+                                    fill="none"
+                                >
+                                    <circle
+                                        cx="10"
+                                        cy="10"
+                                        r="9"
+                                        stroke="currentColor"
+                                        strokeWidth="2"
+                                        fill="none"
+                                    />
+                                    <path
+                                        className="check-icon"
+                                        d="M6 10 L9 13 L14 7"
+                                        stroke="currentColor"
+                                        strokeWidth="2"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        fill="none"
+                                    />
+                                </svg>
+                            )}
+                            <span>{message.text}</span>
                         </div>
                     )}
                 </form>

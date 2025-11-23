@@ -44,7 +44,7 @@ export default function LinkList({ links, onDelete }) {
                 </div>
             </div>
 
-            <div className="glass rounded-2xl shadow-sm border border-white/20 overflow-hidden">
+            <div className="rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden bg-white dark:bg-black">
                 {filteredLinks.length === 0 ? (
                     <div className="flex flex-col items-center justify-center py-12 text-center">
                         <div className="w-16 h-16 bg-indigo-100 dark:bg-indigo-900/30 rounded-full flex items-center justify-center mb-4 text-indigo-500 dark:text-indigo-400">
@@ -57,8 +57,8 @@ export default function LinkList({ links, onDelete }) {
                                 />
                             </svg>
                         </div>
-                        <h4 className="text-lg font-semibold text-slate-800 dark:text-white">No links yet</h4>
-                        <p className="text-slate-500 dark:text-slate-400 max-w-xs mx-auto mt-1">
+                        <h4 className="text-lg font-semibold text-slate-900 dark:text-white">No links yet</h4>
+                        <p className="text-slate-600 dark:text-slate-300 max-w-xs mx-auto mt-1">
                             Create your first short link above to get started.
                         </p>
                     </div>
@@ -66,7 +66,7 @@ export default function LinkList({ links, onDelete }) {
                     <div className="overflow-x-auto">
                         <table className="w-full text-left border-collapse">
                             <thead>
-                                <tr className="bg-slate-100/50 dark:bg-slate-800/50 border-b border-white/10 text-slate-600 dark:text-slate-400 text-xs uppercase tracking-wider font-semibold">
+                                <tr className="bg-slate-50 dark:bg-black border-b border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white text-xs uppercase tracking-wider font-semibold">
                                     <th className="px-6 py-4">Short Link</th>
                                     <th className="px-6 py-4">Original URL</th>
                                     <th className="px-6 py-4 text-center">Clicks</th>
@@ -74,11 +74,11 @@ export default function LinkList({ links, onDelete }) {
                                     <th className="px-6 py-4 text-right">Actions</th>
                                 </tr>
                             </thead>
-                            <tbody className="divide-y divide-white/10 text-sm text-slate-700 dark:text-slate-300">
+                            <tbody className="divide-y divide-slate-200 dark:divide-slate-800 text-sm text-slate-700 dark:text-white">
                                 {filteredLinks.map((link) => {
                                     const shortUrl = `${window.location.origin}/${link.code}`;
                                     return (
-                                        <tr key={link.code} className="hover:bg-white/10 dark:hover:bg-slate-800/30 transition-colors group">
+                                        <tr key={link.code} className="hover:bg-slate-50 dark:hover:bg-white/10 transition-colors group">
                                             <td className="px-6 py-4 font-medium text-indigo-400 dark:text-indigo-300">
                                                 <Link to={`/code/${link.code}`} className="hover:underline flex items-center gap-1">
                                                     {link.code}
@@ -97,22 +97,22 @@ export default function LinkList({ links, onDelete }) {
                                                     </svg>
                                                 </Link>
                                             </td>
-                                            <td className="px-6 py-4 max-w-xs truncate text-slate-900 dark:text-white font-medium" title={link.url}>
+                                            <td className="px-6 py-4 max-w-xs truncate text-slate-900 dark:text-slate-100 font-medium" title={link.url}>
                                                 {link.url}
                                             </td>
                                             <td className="px-6 py-4 text-center">
-                                                <span className="bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 px-2 py-1 rounded-md text-xs font-bold">
+                                                <span className="bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-white px-2 py-1 rounded-md text-xs font-bold">
                                                     {link.clicks}
                                                 </span>
                                             </td>
-                                            <td className="px-6 py-4 text-slate-500 dark:text-slate-400 text-xs">
+                                            <td className="px-6 py-4 text-slate-500 dark:text-white text-xs">
                                                 {new Date(link.created_at).toLocaleDateString()}
                                             </td>
                                             <td className="px-6 py-4 text-right">
                                                 <div className="flex items-center justify-end gap-2">
                                                     <button
                                                         onClick={() => copyToClipboard(shortUrl)}
-                                                        className="p-1 text-slate-400 hover:text-indigo-600 transition-colors"
+                                                        className="p-1 text-slate-400 dark:text-slate-300 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
                                                         title="Copy"
                                                     >
                                                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -126,7 +126,7 @@ export default function LinkList({ links, onDelete }) {
                                                     </button>
                                                     <button
                                                         onClick={() => onDelete(link.code)}
-                                                        className="p-1 text-slate-400 hover:text-red-500 transition-colors"
+                                                        className="p-1 text-slate-400 dark:text-slate-300 hover:text-red-500 dark:hover:text-red-400 transition-colors"
                                                         title="Delete"
                                                     >
                                                         <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">

@@ -57,7 +57,11 @@ app.get('/:code', async (req, res, next) => {
 
 // Fallback route for React Router (must be last)
 app.get('*', (req, res) => {
-    res.sendFile(path.join(__dirname, 'client/dist', 'index.html'));
+    if (process.env.NODE_ENV === 'production') {
+        res.sendFile(path.join(__dirname, 'client/dist', 'index.html'));
+    } else {
+        res.send('API is running. In development, use the Vite dev server (usually port 5173).');
+    }
 });
 
 // Start server
