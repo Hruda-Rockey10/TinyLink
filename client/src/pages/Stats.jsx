@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import Layout from '../components/Layout';
+import DeleteModal from '../components/DeleteModal';
 
 export default function Stats() {
     const { code } = useParams();
@@ -8,6 +9,7 @@ export default function Stats() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(false);
     const [linkData, setLinkData] = useState(null);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
 
     useEffect(() => {
         fetchStats();
@@ -34,15 +36,18 @@ export default function Stats() {
     };
 
     const handleDelete = async () => {
-        if (confirm('Are you sure you want to delete this link?')) {
-            try {
-                const res = await fetch(`/api/links/${code}`, { method: 'DELETE' });
-                if (res.ok) {
-                    navigate('/');
-                }
-            } catch (err) {
+        try {
+            const res = await fetch(`/api/links/${code}`, { method: 'DELETE' });
+            if (res.ok) {
+                navigate('/');
+            } else {
                 alert('Failed to delete');
             }
+        } catch (err) {
+            console.error(err);
+            alert('Error deleting link');
+        } finally {
+            setShowDeleteModal(false);
         }
     };
 
@@ -93,17 +98,17 @@ export default function Stats() {
             <div className="max-w-2xl mx-auto">
                 <div className="space-y-6">
                     {/* Header Card */}
-                    <div className="bg-white rounded-2xl shadow-xl border border-slate-100 p-8 text-center relative overflow-hidden">
+                    <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-xl border border-slate-100 dark:border-slate-700 p-8 text-center relative overflow-hidden">
                         <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-indigo-500 to-pink-500"></div>
 
-                        <h2 className="text-sm uppercase tracking-widest text-slate-400 font-semibold mb-2">
+                        <h2 className="text-sm uppercase tracking-widest text-slate-400 dark:text-slate-500 font-semibold mb-2">
                             Link Statistics
                         </h2>
                         <div className="flex items-center justify-center gap-2 mb-6">
-                            <h1 className="text-3xl sm:text-4xl font-bold text-slate-800">{shortUrl}</h1>
+                            <h1 className="text-3xl sm:text-4xl font-bold text-slate-800 dark:text-white">{shortUrl}</h1>
                             <button
                                 onClick={copyToClipboard}
-                                className="p-2 text-slate-400 hover:text-indigo-600 transition-colors rounded-full hover:bg-indigo-50"
+                                className="p-2 text-slate-400 dark:text-slate-500 hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors rounded-full hover:bg-indigo-50 dark:hover:bg-indigo-900/20"
                                 title="Copy to clipboard"
                             >
                                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -117,36 +122,36 @@ export default function Stats() {
                             </button>
                         </div>
 
-                        <div className="bg-slate-50 rounded-xl p-4 mb-6 text-left break-all border border-slate-100">
-                            <span className="text-xs text-slate-400 font-semibold uppercase block mb-1">
+                        <div className="bg-slate-50 dark:bg-slate-800 rounded-xl p-4 mb-6 text-left break-all border border-slate-100 dark:border-slate-700">
+                            <span className="text-xs text-slate-400 dark:text-slate-500 font-semibold uppercase block mb-1">
                                 Target URL
                             </span>
                             <a
                                 href={linkData.url}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="text-indigo-600 hover:underline font-medium"
+                                className="text-indigo-600 dark:text-indigo-400 hover:underline font-medium"
                             >
                                 {linkData.url}
                             </a>
                         </div>
 
                         <div className="grid grid-cols-2 gap-4">
-                            <div className="bg-indigo-50 rounded-xl p-4 border border-indigo-100">
-                                <span className="text-indigo-400 text-xs font-bold uppercase">Total Clicks</span>
-                                <div className="text-3xl font-bold text-indigo-600 mt-1">{linkData.clicks}</div>
+                            <div className="bg-indigo-50 dark:bg-indigo-900/30 rounded-xl p-4 border border-indigo-100 dark:border-indigo-800">
+                                <span className="text-indigo-400 dark:text-indigo-300 text-xs font-bold uppercase">Total Clicks</span>
+                                <div className="text-3xl font-bold text-indigo-600 dark:text-indigo-400 mt-1">{linkData.clicks}</div>
                             </div>
-                            <div className="bg-pink-50 rounded-xl p-4 border border-pink-100">
-                                <span className="text-pink-400 text-xs font-bold uppercase">Created</span>
-                                <div className="text-lg font-semibold text-pink-600 mt-2">
+                            <div className="bg-pink-50 dark:bg-pink-900/30 rounded-xl p-4 border border-pink-100 dark:border-pink-800">
+                                <span className="text-pink-400 dark:text-pink-300 text-xs font-bold uppercase">Created</span>
+                                <div className="text-lg font-semibold text-pink-600 dark:text-pink-400 mt-2">
                                     {new Date(linkData.created_at).toLocaleDateString()}
                                 </div>
                             </div>
                         </div>
 
-                        <div className="mt-4 bg-slate-50 rounded-xl p-4 border border-slate-100">
-                            <span className="text-slate-400 text-xs font-bold uppercase">Last Clicked</span>
-                            <div className="text-lg font-semibold text-slate-600 mt-1">
+                        <div className="mt-4 bg-slate-50 dark:bg-slate-800 rounded-xl p-4 border border-slate-100 dark:border-slate-700">
+                            <span className="text-slate-400 dark:text-slate-500 text-xs font-bold uppercase">Last Clicked</span>
+                            <div className="text-lg font-semibold text-slate-600 dark:text-slate-300 mt-1">
                                 {linkData.last_clicked
                                     ? new Date(linkData.last_clicked).toLocaleString()
                                     : 'Never'}
@@ -157,8 +162,8 @@ export default function Stats() {
                     {/* Actions */}
                     <div className="flex justify-center">
                         <button
-                            onClick={handleDelete}
-                            className="flex items-center gap-2 px-6 py-3 text-red-500 hover:text-red-600 hover:bg-red-50 rounded-xl transition-colors font-medium"
+                            onClick={() => setShowDeleteModal(true)}
+                            className="flex items-center gap-2 px-6 py-3 text-red-500 dark:text-red-400 hover:text-red-600 dark:hover:text-red-300 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-xl transition-colors font-medium"
                         >
                             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path
@@ -173,6 +178,12 @@ export default function Stats() {
                     </div>
                 </div>
             </div>
+            
+            <DeleteModal
+                isOpen={showDeleteModal}
+                onClose={() => setShowDeleteModal(false)}
+                onConfirm={handleDelete}
+            />
         </Layout>
     );
 }
